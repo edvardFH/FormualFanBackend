@@ -18,3 +18,6 @@ spring:
 jwt:
   secret: daf50757fd37845ba8fdfe9d825e0a9b19c5ea01000c968d120bdbec3b7e357bc99fcd61d8beac0a76cb63215acf5f88c10fa1b700c818e45cc212e944f4ba189c04db2a80326d937d794300e905cec3b56eb71ece3a2ddfa631ae84bd7f0d297860a6112c11d750e8f98a72f8220c9aa508c4bbdbad38e78f73069171b25437
   validity.duration: 1440000 # 24 hours in ms
+auth:
+  admin:
+    login: admin@admin.com
