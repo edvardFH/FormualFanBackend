@@ -2,10 +2,12 @@ package com.onesquad.formulafan;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
-public class FormulaFanBackendApplication {
+@ConfigurationPropertiesScan
+public class FormulaFanApplication {
     public static void main(String[] args) {
-        SpringApplication.run(FormulaFanBackendApplication.class, args);
+        SpringApplication.run(FormulaFanApplication.class, args);
     }
 }
