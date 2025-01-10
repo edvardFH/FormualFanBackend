@@ -23,14 +23,17 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final GrandPrixRepository grandPrixRepository;
+    private final LikeService likeService;
 
     public PostService(
             PostRepository postRepository,
             UserRepository userRepository,
-            GrandPrixRepository grandPrixRepository) {
+            GrandPrixRepository grandPrixRepository,
+            LikeService likeService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.grandPrixRepository = grandPrixRepository;
+        this.likeService = likeService;
     }
 
     public PostResponseDTO createPost(PostRequestDTO request) {
@@ -86,26 +89,20 @@ public class PostService {
     }
 
     public void deletePost(Long id) {
-        if (!postRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Post not found with id: " + id);
-        }
-        postRepository.deleteById(id);
-    }
-
-    public void incrementLikeCount(Long id) {
         Post post = postRepository.findById(id)
                                   .orElseThrow(() -> new ResourceNotFoundException(
                                           "Post not found with id: " + id));
-        post.setLikeCount(post.getLikeCount() + 1);
-        postRepository.save(post);
+        likeService.deleteLikesByPostId(post.getId());
+        postRepository.delete(post);
     }
 
-    public void decrementLikeCount(Long id) {
-        Post post = postRepository.findById(id)
-                                  .orElseThrow(() -> new ResourceNotFoundException(
-                                          "Post not found with id: " + id));
-        post.setLikeCount(Math.max(0, post.getLikeCount() - 1));
-        postRepository.save(post);
+
+    public void likePost(Long postId, Long userId) {
+        likeService.addLike(postId, userId);
+    }
+
+    public void unlikePost(Long postId, Long userId) {
+        likeService.removeLike(postId, userId);
     }
 
     private PostResponseDTO mapToResponseDTO(Post post) {
