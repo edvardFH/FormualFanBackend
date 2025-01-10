@@ -1,6 +1,7 @@
 package com.onesquad.formulafan.application.service;
 
 import com.onesquad.formulafan.adapter.dto.AuthorDTO;
+import com.onesquad.formulafan.adapter.dto.GrandPrixDTO;
 import com.onesquad.formulafan.adapter.dto.PostRequestDTO;
 import com.onesquad.formulafan.adapter.dto.PostResponseDTO;
 import com.onesquad.formulafan.adapter.persistence.GrandPrix;
@@ -33,22 +34,22 @@ public class PostService {
     }
 
     public PostResponseDTO createPost(PostRequestDTO request) {
-        User user =
-                userRepository.findById(1L) // Replace with the logged-in user's ID
-                              .orElseThrow(() -> new ResourceNotFoundException(
-                                      "User not found with id: 1"));
+        User user = userRepository.findById(request.userId())
+                                  .orElseThrow(() -> new ResourceNotFoundException(
+                                          "User not found with id: 1"));
         GrandPrix grandPrix = grandPrixRepository.findById(request.grandPrixId())
                                                  .orElseThrow(() -> new ResourceNotFoundException(
                                                          "Grand Prix not found " +
                                                                  "with id: " +
                                                                  request.grandPrixId()));
-        Post post = new Post(request.title(),
-                             request.description(),
-                             LocalDateTime.now(),
-                             request.imageUrl(),
-                             user,
-                             grandPrix,
-                             0);
+        Post post = new Post(
+                request.title(),
+                request.description(),
+                LocalDateTime.now(),
+                request.imageUrl(),
+                user,
+                grandPrix,
+                0);
         Post savedPost = postRepository.save(post);
         return mapToResponseDTO(savedPost);
     }
@@ -91,35 +92,38 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
-    public PostResponseDTO incrementLikeCount(Long id) {
+    public void incrementLikeCount(Long id) {
         Post post = postRepository.findById(id)
                                   .orElseThrow(() -> new ResourceNotFoundException(
                                           "Post not found with id: " + id));
         post.setLikeCount(post.getLikeCount() + 1);
-        Post updatedPost = postRepository.save(post);
-        return mapToResponseDTO(updatedPost);
+        postRepository.save(post);
     }
 
-    public PostResponseDTO decrementLikeCount(Long id) {
+    public void decrementLikeCount(Long id) {
         Post post = postRepository.findById(id)
                                   .orElseThrow(() -> new ResourceNotFoundException(
                                           "Post not found with id: " + id));
         post.setLikeCount(Math.max(0, post.getLikeCount() - 1));
-        Post updatedPost = postRepository.save(post);
-        return mapToResponseDTO(updatedPost);
+        postRepository.save(post);
     }
 
     private PostResponseDTO mapToResponseDTO(Post post) {
         AuthorDTO authorDTO =
                 new AuthorDTO(post.getUser().getId(), post.getUser().getUsername());
-        return new PostResponseDTO(post.getId(),
-                                   post.getTitle(),
-                                   post.getDescription(),
-                                   post.getImageUrl(),
-                                   authorDTO,
-                                   post.getGrandPrix().getId(),
-                                   post.getDateCreated(),
-                                   post.getLikeCount());
+        return new PostResponseDTO(
+                post.getId(),
+                post.getTitle(),
+                post.getDescription(),
+                post.getImageUrl(),
+                authorDTO,
+                mapToResponseDTO(post.getGrandPrix()),
+                post.getDateCreated(),
+                post.getLikeCount());
+    }
+
+    private GrandPrixDTO mapToResponseDTO(GrandPrix grandPrix) {
+        return new GrandPrixDTO(grandPrix.getId(), grandPrix.getName());
     }
 }
 

@@ -9,7 +9,7 @@ public record PostResponseDTO(
         String description,
         String imageUrl,
         AuthorDTO author,
-        Long grandPrixId,
+        GrandPrixDTO grandPrix,
         LocalDateTime dateCreated,
         int likeCount) {
 }

@@ -36,29 +36,31 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostResponseDTO> getPostById(@PathVariable Long id) {
+    public ResponseEntity<PostResponseDTO> getPostById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PostResponseDTO> updatePost(
-            @PathVariable Long id, @RequestBody PostRequestDTO request) {
+            @PathVariable("id") Long id, @RequestBody PostRequestDTO request) {
         return ResponseEntity.ok(postService.updatePost(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePost(@PathVariable("id") Long id) {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/like")
-    public ResponseEntity<PostResponseDTO> likePost(@PathVariable Long id) {
-        return ResponseEntity.ok(postService.incrementLikeCount(id));
+    public ResponseEntity<?> likePost(@PathVariable("id") Long id) {
+        postService.incrementLikeCount(id);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/unlike")
-    public ResponseEntity<PostResponseDTO> unlikePost(@PathVariable Long id) {
-        return ResponseEntity.ok(postService.decrementLikeCount(id));
+    public ResponseEntity<?> unlikePost(@PathVariable("id") Long id) {
+        postService.decrementLikeCount(id);
+        return ResponseEntity.ok().build();
     }
 }
