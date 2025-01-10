@@ -104,6 +104,10 @@ public class PostService {
         likeService.removeLike(postId, userId);
     }
 
+    public int getTotalPostsByUser(Long userId) {
+        return postRepository.countByUserId(userId);
+    }
+
     private PostResponseDTO mapToResponseDTO(Post post) {
         AuthorDTO authorDTO =
                 new AuthorDTO(post.getUser().getId(), post.getUser().getUsername());

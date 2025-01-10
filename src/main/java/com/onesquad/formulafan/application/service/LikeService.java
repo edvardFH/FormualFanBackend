@@ -65,6 +65,16 @@ public class LikeService {
         postRepository.save(post);
     }
 
+    public int getTotalLikesGivenByUser(Long userId) {
+        return likeRepository.countByUserId(userId);
+    }
+
+    public int getTotalLikesReceivedByUser(Long userId) {
+        return postRepository.findPostsByUserId(userId)
+                             .stream()
+                             .mapToInt(post -> likeRepository.countByPostId(post.getId()))
+                             .sum();
+    }
 
     public boolean isPostLikedByUser(Long postId, Long userId) {
         return likeRepository.existsByPostIdAndUserId(postId, userId);
