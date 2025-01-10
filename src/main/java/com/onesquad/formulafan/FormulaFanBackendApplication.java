@@ -1,0 +1,11 @@
+package com.onesquad.formulafan;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class FormulaFanBackendApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(FormulaFanBackendApplication.class, args);
+    }
+}
