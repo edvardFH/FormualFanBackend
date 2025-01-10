@@ -7,6 +7,8 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByOrderByDateCreatedDesc();
 
+    List<Post> findByGrandPrixIdOrderByDateCreatedDesc(Long grandPrixId);
+
     List<Post> findPostsByUserId(Long userId);
 
     int countByUserId(Long userId);

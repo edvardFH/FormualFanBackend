@@ -24,5 +24,3 @@ public class ProfileStatController {
         return ResponseEntity.ok(profileStats);
     }
 }
-
-

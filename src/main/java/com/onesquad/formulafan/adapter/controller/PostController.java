@@ -36,6 +36,12 @@ public class PostController {
         return ResponseEntity.ok(postService.getAllPosts());
     }
 
+    @GetMapping("/grand-prix/{grandPrixId}")
+    public ResponseEntity<List<PostResponseDTO>> getPostsByGrandPrix(@PathVariable("grandPrixId") Long grandPrixId) {
+        return ResponseEntity.ok(postService.getPostsByGrandPrix(grandPrixId));
+    }
+
+
     @GetMapping("/{id}")
     public ResponseEntity<PostResponseDTO> getPostById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(postService.getPostById(id));

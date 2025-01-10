@@ -108,6 +108,14 @@ public class PostService {
         return postRepository.countByUserId(userId);
     }
 
+    public List<PostResponseDTO> getPostsByGrandPrix(Long grandPrixId) {
+        return postRepository.findByGrandPrixIdOrderByDateCreatedDesc(grandPrixId)
+                             .stream()
+                             .map(this::mapToResponseDTO)
+                             .collect(Collectors.toList());
+    }
+
+
     private PostResponseDTO mapToResponseDTO(Post post) {
         AuthorDTO authorDTO =
                 new AuthorDTO(post.getUser().getId(), post.getUser().getUsername());
