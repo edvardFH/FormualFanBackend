@@ -65,11 +65,6 @@ public class LikeService {
         postRepository.save(post);
     }
 
-    @Transactional
-    public void deleteLikesByPostId(Long postId) {
-        likeRepository.deleteAllByPostId(postId);
-    }
-
 
     public boolean isPostLikedByUser(Long postId, Long userId) {
         return likeRepository.existsByPostIdAndUserId(postId, userId);

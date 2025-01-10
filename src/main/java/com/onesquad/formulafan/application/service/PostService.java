@@ -92,7 +92,6 @@ public class PostService {
         Post post = postRepository.findById(id)
                                   .orElseThrow(() -> new ResourceNotFoundException(
                                           "Post not found with id: " + id));
-        likeService.deleteLikesByPostId(post.getId());
         postRepository.delete(post);
     }
 
