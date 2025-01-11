@@ -73,14 +73,14 @@ public class PostController {
     }
 
     @PostMapping("/{id}/like")
-    public ResponseEntity<PostResponseDTO> likePost(
+    public ResponseEntity<?> likePost(
             @PathVariable("id") Long id, @RequestParam("user") Long userId) {
         postService.likePost(id, userId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/unlike")
-    public ResponseEntity<PostResponseDTO> unlikePost(
+    public ResponseEntity<?> unlikePost(
             @PathVariable("id") Long id, @RequestParam("user") Long userId) {
         postService.unlikePost(id, userId);
         return ResponseEntity.ok().build();
