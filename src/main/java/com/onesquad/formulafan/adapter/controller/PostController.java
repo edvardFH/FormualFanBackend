@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/posts")
 public class PostController {
+
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final PostService postService;
 
@@ -32,25 +35,35 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostResponseDTO>> getAllPosts() {
-        return ResponseEntity.ok(postService.getAllPosts());
+    public ResponseEntity<List<PostResponseDTO>> getAllPosts(@RequestHeader(value
+            = "Authorization", required = false) String authorizationHeader) {
+        return ResponseEntity.ok(postService.getAllPosts(authorizationHeader));
     }
 
     @GetMapping("/grand-prix/{grandPrixId}")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByGrandPrix(@PathVariable("grandPrixId") Long grandPrixId) {
-        return ResponseEntity.ok(postService.getPostsByGrandPrix(grandPrixId));
+    public ResponseEntity<List<PostResponseDTO>> getPostsByGrandPrix(
+            @PathVariable("grandPrixId") Long grandPrixId,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        return ResponseEntity.ok(postService.getPostsByGrandPrix(grandPrixId,
+                                                                 authorizationHeader));
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostResponseDTO> getPostById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(postService.getPostById(id));
+    public ResponseEntity<PostResponseDTO> getPostById(
+            @PathVariable("id") Long id,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        return ResponseEntity.ok(postService.getPostById(id, authorizationHeader));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PostResponseDTO> updatePost(
-            @PathVariable("id") Long id, @RequestBody PostRequestDTO request) {
-        return ResponseEntity.ok(postService.updatePost(id, request));
+            @PathVariable("id") Long id,
+            @RequestBody PostRequestDTO request,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        return ResponseEntity.ok(postService.updatePost(id,
+                                                        request,
+                                                        authorizationHeader));
     }
 
     @DeleteMapping("/{id}")

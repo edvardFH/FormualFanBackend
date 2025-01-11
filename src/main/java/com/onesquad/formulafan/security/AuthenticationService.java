@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -104,6 +105,37 @@ public class AuthenticationService {
 
         return Boolean.TRUE;
     }
+
+    public User getAuthenticatedUser(String authorizationHeader) {
+        final String token;
+        final String userEmail;
+
+        if (authorizationHeader == null ||
+                !authorizationHeader.startsWith(BEARER_PREFIX)) {
+            return null;
+        }
+
+        token = authorizationHeader.substring(TOKEN_START_INDEX);
+        userEmail = jwtService.extractUsername(token);
+
+        if (userEmail == null) {
+            return null;
+        }
+
+        try {
+            UserDetails userDetails =
+                    userDetailsService.loadUserByUsername(userEmail);
+            if (!jwtService.isTokenValid(token, userDetails)) {
+                return null;
+            }
+
+            return userRepository.findByEmail(userEmail).orElse(null);
+        } catch (UsernameNotFoundException e) {
+            return null;
+        }
+
+    }
+
 
     private void validateUser(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {

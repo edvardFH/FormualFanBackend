@@ -6,11 +6,13 @@ import com.onesquad.formulafan.adapter.dto.PostRequestDTO;
 import com.onesquad.formulafan.adapter.dto.PostResponseDTO;
 import com.onesquad.formulafan.adapter.persistence.GrandPrix;
 import com.onesquad.formulafan.adapter.persistence.GrandPrixRepository;
+import com.onesquad.formulafan.adapter.persistence.LikeRepository;
 import com.onesquad.formulafan.adapter.persistence.Post;
 import com.onesquad.formulafan.adapter.persistence.PostRepository;
 import com.onesquad.formulafan.adapter.persistence.User;
 import com.onesquad.formulafan.adapter.persistence.UserRepository;
 import com.onesquad.formulafan.application.exception.ResourceNotFoundException;
+import com.onesquad.formulafan.security.AuthenticationService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,16 +26,22 @@ public class PostService {
     private final UserRepository userRepository;
     private final GrandPrixRepository grandPrixRepository;
     private final LikeService likeService;
+    private final LikeRepository likeRepository;
+    private final AuthenticationService authenticationService;
 
     public PostService(
             PostRepository postRepository,
             UserRepository userRepository,
             GrandPrixRepository grandPrixRepository,
-            LikeService likeService) {
+            LikeService likeService,
+            LikeRepository likeRepository,
+            AuthenticationService authenticationService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.grandPrixRepository = grandPrixRepository;
         this.likeService = likeService;
+        this.likeRepository = likeRepository;
+        this.authenticationService = authenticationService;
     }
 
     public PostResponseDTO createPost(PostRequestDTO request) {
@@ -45,33 +53,39 @@ public class PostService {
                                                          "Grand Prix not found " +
                                                                  "with id: " +
                                                                  request.grandPrixId()));
-        Post post = new Post(
-                request.title(),
-                request.description(),
-                LocalDateTime.now(),
-                request.imageUrl(),
-                user,
-                grandPrix,
-                0);
+        Post post = new Post(request.title(),
+                             request.description(),
+                             LocalDateTime.now(),
+                             request.imageUrl(),
+                             user,
+                             grandPrix,
+                             0);
         Post savedPost = postRepository.save(post);
-        return mapToResponseDTO(savedPost);
+        return mapToResponseDTO(savedPost, null);
     }
 
-    public List<PostResponseDTO> getAllPosts() {
+    public List<PostResponseDTO> getAllPosts(String authorizationHeader) {
+        User authenticatedUser =
+                authenticationService.getAuthenticatedUser(authorizationHeader);
+
         return postRepository.findAllByOrderByDateCreatedDesc()
                              .stream()
-                             .map(this::mapToResponseDTO)
+                             .map(post -> mapToResponseDTO(post, authenticatedUser))
                              .collect(Collectors.toList());
     }
 
-    public PostResponseDTO getPostById(Long id) {
+    public PostResponseDTO getPostById(Long id, String authorizationHeader) {
+        User authenticatedUser =
+                authenticationService.getAuthenticatedUser(authorizationHeader);
+
         Post post = postRepository.findById(id)
                                   .orElseThrow(() -> new ResourceNotFoundException(
                                           "Post not found with id: " + id));
-        return mapToResponseDTO(post);
+        return mapToResponseDTO(post, authenticatedUser);
     }
 
-    public PostResponseDTO updatePost(Long id, PostRequestDTO request) {
+    public PostResponseDTO updatePost(
+            Long id, PostRequestDTO request, String authorizationHeader) {
         Post post = postRepository.findById(id)
                                   .orElseThrow(() -> new ResourceNotFoundException(
                                           "Post not found with id: " + id));
@@ -80,12 +94,16 @@ public class PostService {
                                                          "Grand Prix not found " +
                                                                  "with id: " +
                                                                  request.grandPrixId()));
+
+        User authenticatedUser =
+                authenticationService.getAuthenticatedUser(authorizationHeader);
+
         post.setTitle(request.title());
         post.setDescription(request.description());
         post.setImageUrl(request.imageUrl());
         post.setGrandPrix(grandPrix);
         Post updatedPost = postRepository.save(post);
-        return mapToResponseDTO(updatedPost);
+        return mapToResponseDTO(updatedPost, authenticatedUser);
     }
 
     public void deletePost(Long id) {
@@ -108,26 +126,37 @@ public class PostService {
         return postRepository.countByUserId(userId);
     }
 
-    public List<PostResponseDTO> getPostsByGrandPrix(Long grandPrixId) {
+    public List<PostResponseDTO> getPostsByGrandPrix(
+            Long grandPrixId, String authorizationHeader) {
+        User authenticatedUser =
+                authenticationService.getAuthenticatedUser(authorizationHeader);
+
         return postRepository.findByGrandPrixIdOrderByDateCreatedDesc(grandPrixId)
                              .stream()
-                             .map(this::mapToResponseDTO)
+                             .map(post -> mapToResponseDTO(post, authenticatedUser))
                              .collect(Collectors.toList());
     }
 
 
-    private PostResponseDTO mapToResponseDTO(Post post) {
+    private PostResponseDTO mapToResponseDTO(Post post, User authenticatedUser) {
+        boolean liked = false;
+
+        if (authenticatedUser != null) {
+            liked = likeRepository.existsByPostIdAndUserId(post.getId(),
+                                                           authenticatedUser.getId());
+        }
+
         AuthorDTO authorDTO =
                 new AuthorDTO(post.getUser().getId(), post.getUser().getUsername());
-        return new PostResponseDTO(
-                post.getId(),
-                post.getTitle(),
-                post.getDescription(),
-                post.getImageUrl(),
-                authorDTO,
-                mapToResponseDTO(post.getGrandPrix()),
-                post.getDateCreated(),
-                post.getLikeCount());
+        return new PostResponseDTO(post.getId(),
+                                   post.getTitle(),
+                                   post.getDescription(),
+                                   post.getImageUrl(),
+                                   authorDTO,
+                                   mapToResponseDTO(post.getGrandPrix()),
+                                   post.getDateCreated(),
+                                   post.getLikeCount(),
+                                   liked);
     }
 
     private GrandPrixDTO mapToResponseDTO(GrandPrix grandPrix) {

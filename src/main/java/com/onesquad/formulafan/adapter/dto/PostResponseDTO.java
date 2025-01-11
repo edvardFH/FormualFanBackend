@@ -11,6 +11,7 @@ public record PostResponseDTO(
         AuthorDTO author,
         GrandPrixDTO grandPrix,
         LocalDateTime dateCreated,
-        int likeCount) {
+        int likeCount,
+        boolean isLiked) {
 }
 
