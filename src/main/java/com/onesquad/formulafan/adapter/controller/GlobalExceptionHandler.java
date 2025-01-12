@@ -1,6 +1,7 @@
 package com.onesquad.formulafan.adapter.controller;
 
 import com.onesquad.formulafan.application.exception.FieldValueAlreadyUsedException;
+import com.onesquad.formulafan.application.exception.IllegalOperationException;
 import com.onesquad.formulafan.application.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleExceptions(Exception ex) {
         HttpStatus status = switch (ex) {
             case FieldValueAlreadyUsedException e -> HttpStatus.FORBIDDEN;
+            case IllegalOperationException e -> HttpStatus.UNAUTHORIZED;
             case AuthenticationException e -> HttpStatus.UNAUTHORIZED;
             case ResourceNotFoundException e -> HttpStatus.NOT_FOUND;
             case IllegalArgumentException e -> HttpStatus.BAD_REQUEST;

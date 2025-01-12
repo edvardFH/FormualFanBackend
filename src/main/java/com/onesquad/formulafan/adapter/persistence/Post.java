@@ -40,7 +40,12 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Moderation> moderations;
+
     private int likeCount;
+
+    private boolean hidden = false;
 
     public Post() {
     }
@@ -52,7 +57,8 @@ public class Post {
             String imageUrl,
             User user,
             GrandPrix grandPrix,
-            int likeCount) {
+            int likeCount,
+            boolean hidden) {
         this.title = title;
         this.description = description;
         this.dateCreated = dateCreated;
@@ -132,5 +138,13 @@ public class Post {
 
     public void setLikes(List<Like> likes) {
         this.likes = likes;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 }

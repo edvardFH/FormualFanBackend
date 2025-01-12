@@ -59,7 +59,8 @@ public class PostService {
                              request.imageUrl(),
                              user,
                              grandPrix,
-                             0);
+                             0,
+                             false);
         Post savedPost = postRepository.save(post);
         return mapToResponseDTO(savedPost, null);
     }
@@ -167,7 +168,8 @@ public class PostService {
                                    mapToResponseDTO(post.getGrandPrix()),
                                    post.getDateCreated(),
                                    post.getLikeCount(),
-                                   liked);
+                                   liked,
+                                   post.isHidden());
     }
 
     private GrandPrixDTO mapToResponseDTO(GrandPrix grandPrix) {
