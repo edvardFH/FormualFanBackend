@@ -7,7 +7,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByHiddenFalseOrderByDateCreatedDesc();
 
-    List<Post> findByGrandPrixIdOrderByDateCreatedDesc(Long grandPrixId);
+    List<Post> findByGrandPrixIdAndHiddenFalseOrderByDateCreatedDesc(Long grandPrixId);
 
     List<Post> findByUserIdOrderByDateCreatedDesc(Long userId);
 

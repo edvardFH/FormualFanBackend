@@ -132,7 +132,8 @@ public class PostService {
         User authenticatedUser =
                 authenticationService.getAuthenticatedUser(authorizationHeader);
 
-        return postRepository.findByGrandPrixIdOrderByDateCreatedDesc(grandPrixId)
+        return postRepository.findByGrandPrixIdAndHiddenFalseOrderByDateCreatedDesc(
+                                     grandPrixId)
                              .stream()
                              .map(post -> mapToResponseDTO(post, authenticatedUser))
                              .collect(Collectors.toList());
