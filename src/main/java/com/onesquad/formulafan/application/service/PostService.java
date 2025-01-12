@@ -69,7 +69,7 @@ public class PostService {
         User authenticatedUser =
                 authenticationService.getAuthenticatedUser(authorizationHeader);
 
-        return postRepository.findAllByOrderByDateCreatedDesc()
+        return postRepository.findByHiddenFalseOrderByDateCreatedDesc()
                              .stream()
                              .map(post -> mapToResponseDTO(post, authenticatedUser))
                              .collect(Collectors.toList());
