@@ -48,6 +48,14 @@ public class PostController {
                                                                  authorizationHeader));
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PostResponseDTO>> getPostsByUser(
+            @PathVariable("userId") Long userId,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        return ResponseEntity.ok(postService.getPostsByUser(userId,
+                                                            authorizationHeader));
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponseDTO> getPostById(

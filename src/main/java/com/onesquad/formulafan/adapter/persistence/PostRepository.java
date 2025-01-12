@@ -9,7 +9,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByGrandPrixIdOrderByDateCreatedDesc(Long grandPrixId);
 
-    List<Post> findPostsByUserId(Long userId);
+    List<Post> findByUserIdOrderByDateCreatedDesc(Long userId);
 
     int countByUserId(Long userId);
 }

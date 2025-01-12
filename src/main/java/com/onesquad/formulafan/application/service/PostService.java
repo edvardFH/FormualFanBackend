@@ -137,6 +137,17 @@ public class PostService {
                              .collect(Collectors.toList());
     }
 
+    public List<PostResponseDTO> getPostsByUser(
+            Long userId, String authorizationHeader) {
+        User authenticatedUser =
+                authenticationService.getAuthenticatedUser(authorizationHeader);
+
+        return postRepository.findByUserIdOrderByDateCreatedDesc(userId)
+                             .stream()
+                             .map(post -> mapToResponseDTO(post, authenticatedUser))
+                             .collect(Collectors.toList());
+    }
+
 
     private PostResponseDTO mapToResponseDTO(Post post, User authenticatedUser) {
         boolean liked = false;

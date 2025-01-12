@@ -70,7 +70,7 @@ public class LikeService {
     }
 
     public int getTotalLikesReceivedByUser(Long userId) {
-        return postRepository.findPostsByUserId(userId)
+        return postRepository.findByUserIdOrderByDateCreatedDesc(userId)
                              .stream()
                              .mapToInt(post -> likeRepository.countByPostId(post.getId()))
                              .sum();
