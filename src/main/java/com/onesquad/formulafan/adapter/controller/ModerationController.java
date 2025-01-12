@@ -35,8 +35,9 @@ public class ModerationController {
     }
 
     @GetMapping("/hidden-posts")
-    public ResponseEntity<List<ModerationResponseDTO>> getAllHiddenPosts() {
-        return ResponseEntity.ok(moderationService.getAllHiddenPosts());
+    public ResponseEntity<List<ModerationResponseDTO>> getAllHiddenPosts(@RequestHeader("Authorization") String authorizationHeader) {
+        return ResponseEntity.ok(moderationService.getAllHiddenPosts(
+                authorizationHeader));
     }
 
     @PutMapping("/{moderationId}/reason")

@@ -4,8 +4,7 @@ import java.time.LocalDateTime;
 
 public record ModerationResponseDTO(
         Long id,
-        Long postId,
-        String postTitle,
+        PostResponseDTO post,
         Long adminId,
         String adminUsername,
         String reason,

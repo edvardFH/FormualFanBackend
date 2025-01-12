@@ -151,7 +151,7 @@ public class PostService {
     }
 
 
-    private PostResponseDTO mapToResponseDTO(Post post, User authenticatedUser) {
+    public PostResponseDTO mapToResponseDTO(Post post, User authenticatedUser) {
         boolean liked = false;
 
         if (authenticatedUser != null) {

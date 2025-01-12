@@ -2,6 +2,7 @@ package com.onesquad.formulafan.application.service;
 
 import com.onesquad.formulafan.adapter.dto.ModerationRequestDTO;
 import com.onesquad.formulafan.adapter.dto.ModerationResponseDTO;
+import com.onesquad.formulafan.adapter.dto.PostResponseDTO;
 import com.onesquad.formulafan.adapter.persistence.Moderation;
 import com.onesquad.formulafan.adapter.persistence.ModerationRepository;
 import com.onesquad.formulafan.adapter.persistence.Post;
@@ -24,14 +25,17 @@ public class ModerationService {
     private final ModerationRepository moderationRepository;
     private final PostRepository postRepository;
     private final AuthenticationService authenticationService;
+    private final PostService postService;
 
     public ModerationService(
             ModerationRepository moderationRepository,
             PostRepository postRepository,
-            AuthenticationService authenticationService) {
+            AuthenticationService authenticationService,
+            PostService postService) {
         this.moderationRepository = moderationRepository;
         this.postRepository = postRepository;
         this.authenticationService = authenticationService;
+        this.postService = postService;
     }
 
     @Transactional
@@ -50,11 +54,29 @@ public class ModerationService {
         moderationRepository.save(moderation);
     }
 
-    public List<ModerationResponseDTO> getAllHiddenPosts() {
+    public List<ModerationResponseDTO> getAllHiddenPosts(String authorizationHeader) {
+        User authenticatedUser =
+                authenticationService.getAuthenticatedUser(authorizationHeader);
+
         return moderationRepository.findAll()
                                    .stream()
-                                   .map(this::mapToResponseDTO)
+                                   .map(moderation -> mapToResponseDTO(moderation,
+                                                                       authenticatedUser))
                                    .collect(Collectors.toList());
+    }
+
+    private ModerationResponseDTO mapToResponseDTO(
+            Moderation moderation, User authenticatedUser) {
+        PostResponseDTO postResponseDTO =
+                postService.mapToResponseDTO(moderation.getPost(),
+                                             authenticatedUser);
+
+        return new ModerationResponseDTO(moderation.getId(),
+                                         postResponseDTO,
+                                         moderation.getAdmin().getId(),
+                                         moderation.getAdmin().getUsername(),
+                                         moderation.getReason(),
+                                         moderation.getDate());
     }
 
     @Transactional
@@ -103,17 +125,6 @@ public class ModerationService {
         }
 
         return admin;
-    }
-
-    private ModerationResponseDTO mapToResponseDTO(Moderation moderation) {
-        return new ModerationResponseDTO(
-                moderation.getId(),
-                moderation.getPost().getId(),
-                moderation.getPost().getTitle(),
-                moderation.getAdmin().getId(),
-                moderation.getAdmin().getUsername(),
-                moderation.getReason(),
-                moderation.getDate());
     }
 }
 
