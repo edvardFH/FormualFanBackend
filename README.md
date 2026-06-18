@@ -128,14 +128,12 @@ An admin account is seeded automatically at startup. Credentials in `application
 
 Base URL: `http://localhost:8080`
 
-All endpoints except `/api/v1/auth/**` require `Authorization: Bearer <token>`.
-Moderation endpoints (`/api/v1/moderation/**`) require `ADMIN` role.
+Full endpoint reference — request/response bodies, parameters, auth requirements, and error codes — is documented in **[API_REFERENCE.md](./API_REFERENCE.md)**.
 
 | Resource | Base path |
 |---|---|
-| Authentication | `POST /api/v1/auth/register` · `POST /api/v1/auth/login` |
-| Posts | `GET/POST /api/v1/posts` · `GET /api/v1/posts/grand-prix/{id}` · `GET /api/v1/posts/user/{id}` |
-| Likes | `POST /api/v1/posts/{id}/like` · `POST /api/v1/posts/{id}/unlike` |
-| Grand Prix | `GET /api/v1/grand-prix` |
-| Moderation | `POST /api/v1/moderation/hide` · `GET /api/v1/moderation/hidden-posts` |
-| Stats | `GET /api/v1/stats/{userId}` |
+| Authentication | `/api/v1/auth` |
+| Posts | `/api/v1/posts` |
+| Grand Prix | `/api/v1/grand-prix` |
+| Moderation *(ADMIN)* | `/api/v1/moderation` |
+| Stats | `/api/v1/stats` |
