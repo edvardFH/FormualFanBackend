@@ -1,4 +1,4 @@
-# Formula Fan — API Reference
+# Formula Fan - API Reference
 
 Base URL: `http://localhost:8080`
 
@@ -15,8 +15,8 @@ Authorization: Bearer <token>
 Tokens are issued by `/api/v1/auth/register` and `/api/v1/auth/login`. Validity: 24 hours.
 
 Two roles exist:
-- `CUSTOMER` — assigned to every new user
-- `ADMIN` — seeded at startup via `application.yml` → `auth.admin.login`
+- `CUSTOMER` - assigned to every new user
+- `ADMIN` - seeded at startup via `application.yml` → `auth.admin.login`
 
 ---
 
@@ -93,7 +93,7 @@ Authenticate with existing credentials.
 }
 ```
 
-**Response `200 OK`** — same shape as `/register`.
+**Response `200 OK`** - same shape as `/register`.
 
 **Errors:** `401` if credentials are incorrect.
 
@@ -119,7 +119,7 @@ Validate a JWT. Used internally by clients before making authenticated requests.
 
 **Response `200 OK`** → `true`
 
-**Response `401 Unauthorized`** (no body) — token missing, malformed, or expired.
+**Response `401 Unauthorized`** (no body) - token missing, malformed, or expired.
 
 ---
 
@@ -137,7 +137,7 @@ Return all visible posts, sorted by creation date descending. Hidden posts are e
 
 **Header:** `Authorization: Bearer <token>` *(optional)*
 
-**Response `200 OK`** — array of `PostResponseDTO` (see [Post response object](#post-response-object)).
+**Response `200 OK`** - array of `PostResponseDTO` (see [Post response object](#post-response-object)).
 
 ---
 
@@ -159,7 +159,7 @@ Create a new post.
 }
 ```
 
-**Response `200 OK`** — `PostResponseDTO`.
+**Response `200 OK`** - `PostResponseDTO`.
 
 ---
 
@@ -171,7 +171,7 @@ Return a single post by ID.
 
 **Header:** `Authorization: Bearer <token>` *(optional)*
 
-**Response `200 OK`** — `PostResponseDTO`.
+**Response `200 OK`** - `PostResponseDTO`.
 
 **Errors:** `404` if post not found.
 
@@ -185,9 +185,9 @@ Update an existing post.
 
 **Header:** `Authorization: Bearer <token>` *(required)*
 
-**Request body** — same shape as `POST /api/v1/posts`.
+**Request body** - same shape as `POST /api/v1/posts`.
 
-**Response `200 OK`** — updated `PostResponseDTO`.
+**Response `200 OK`** - updated `PostResponseDTO`.
 
 **Errors:** `404` if post not found.
 
@@ -215,7 +215,7 @@ Return all visible posts for a Grand Prix, sorted by creation date descending.
 
 **Header:** `Authorization: Bearer <token>` *(optional)*
 
-**Response `200 OK`** — array of `PostResponseDTO`.
+**Response `200 OK`** - array of `PostResponseDTO`.
 
 ---
 
@@ -227,7 +227,7 @@ Return all visible posts by a user, sorted by creation date descending.
 
 **Header:** `Authorization: Bearer <token>` *(optional)*
 
-**Response `200 OK`** — array of `PostResponseDTO`.
+**Response `200 OK`** - array of `PostResponseDTO`.
 
 ---
 
@@ -237,7 +237,7 @@ Like a post.
 
 **Path parameter:** `id` (Long)
 
-**Query parameter:** `user` (Long) — ID of the liking user
+**Query parameter:** `user` (Long) - ID of the liking user
 
 **Header:** `Authorization: Bearer <token>` *(required)*
 
@@ -253,7 +253,7 @@ Remove a like from a post.
 
 **Path parameter:** `id` (Long)
 
-**Query parameter:** `user` (Long) — ID of the user
+**Query parameter:** `user` (Long) - ID of the user
 
 **Header:** `Authorization: Bearer <token>` *(required)*
 
@@ -290,7 +290,7 @@ Remove a like from a post.
 
 ## Grand Prix (`/api/v1/grand-prix`)
 
-**Public** — no authentication required.
+**Public** - no authentication required.
 
 ---
 
@@ -392,7 +392,7 @@ Restore a hidden post (cancel moderation).
 
 ## Stats (`/api/v1/stats`)
 
-**Public** — no authentication required.
+**Public** - no authentication required.
 
 ---
 
