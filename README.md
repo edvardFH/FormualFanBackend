@@ -1,4 +1,4 @@
-# Formula Fan — Backend
+# Formula Fan - Backend
 
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.5-brightgreen?logo=springboot&logoColor=white)
@@ -128,7 +128,7 @@ An admin account is seeded automatically at startup. Credentials in `application
 
 Base URL: `http://localhost:8080`
 
-Full endpoint reference — request/response bodies, parameters, auth requirements, and error codes — is documented in **[API_REFERENCE.md](./API_REFERENCE.md)**.
+Full endpoint reference (request/response bodies, parameters, auth requirements, and error codes) is documented in **[API_REFERENCE.md](./API_REFERENCE.md)**.
 
 | Resource | Base path |
 |---|---|
